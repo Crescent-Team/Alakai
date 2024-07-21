@@ -1,7 +1,8 @@
 {
   "files.associations": {
     "dstr.h": "c",
-    "stdio.h": "c"
+    "stdio.h": "c",
+    "dynstring.h": "c"
   },
   "luau-lsp.require.mode": "relativeToFile",
   "luau-lsp.require.directoryAliases": {

@@ -1,3 +1,5 @@
 #include <stdio.h>
 
-char *next_comment(FILE *stream);
+#include "../../Utils/include/dynString.h"
+
+dynString *next_comment(FILE *stream);

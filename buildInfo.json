@@ -1,7 +1,7 @@
 {
     "libraries" : {
         "Extractor" : "Extractor/src/FileParser.c Extractor/src/DocCommentGen.c Extractor/src/Solver.c",
-        "Utils" : "Utils/src/dynString.c"
+        "Utils" : "Utils/src/dynString.c Utils/src/AlakaiError.c"
     },
     "executable": {
         "dependencies" : "Extractor Utils",

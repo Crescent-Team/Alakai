@@ -4,11 +4,6 @@
 
 #include "../../Utils/include/dynString.h"
 
-/*
-    A function to reach at the new starting of a Luau comment, which is `--`
-
-    NOTE: This works when I think it shouldn't work.
-*/
 void skip_until_next_starting(FILE *stream)
 {
     int lookup;
@@ -22,44 +17,44 @@ void skip_until_next_starting(FILE *stream)
     }
 }
 
-ReturnCodes consume_for_single_line(FILE *stream, dynString *string)
+void consume_for_single_line(FILE *stream, dynString *string)
 {
     int lookup;
     while ((lookup = getc(stream)) != EOF && lookup != '\n')
     {
-        ReturnCodes status = append_char_to_dynString(string, lookup);
-
-        if(status != PASS)
-            return status;
+        append_char_to_dynString(string, lookup);
     }
 }
 
-char *next_comment(FILE *stream)
+void consume_for_mutli_line(FILE *stream, dynString *string)
+{
+    int lookup;
+    while ((lookup = getc(stream)) != EOF && lookup != ']')
+    {
+        append_char_to_dynString(string, lookup);
+    }
+}
+// FUTURE: Luau has support for --[=[]=] syntax, so we need to implement support for that
+dynString *next_comment(FILE *stream)
 {
     skip_until_next_starting(stream);
 
     dynString *string = new_dynString();
 
-    if (getc(stream) == '[' && getc(stream) == '[')
-    { // Comment is multi
-        char *buff = (char *)malloc(100000 * sizeof(char));
-        int index = 0;
+    int lookup = getc(stream);
+    int next_lookup = getc(stream);
 
-        char ch = getc(stream);
-        while (ch != ']')
-        {
-            buff[index] = ch;
-            index++;
-            ch = getc(stream);
-        }
-        getc(stream);
-        buff[index] = '\0';
-        return buff;
-    }
-    else
+    if (next_lookup == EOF)
+        return string;
+
+    if (lookup == '[' && next_lookup == '[')
     {
-        consume_for_single_line(stream, string);
-
-        return string->buff;
+        consume_for_mutli_line(stream, string);
+        return string;
     }
+
+    append_char_to_dynString(string, lookup);
+    append_char_to_dynString(string, next_lookup);
+    consume_for_single_line(stream, string);
+    return string;
 }

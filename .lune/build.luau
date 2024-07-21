@@ -14,5 +14,5 @@ end
 
 local args = string.split(files, " ")
 table.insert(args, `-o{executableInfo.name}`)
-
+table.insert(args, "-O2")
 print(process.spawn("gcc", args).stderr)

@@ -1,0 +1,1 @@
+void exit_due_to_allocation_null();

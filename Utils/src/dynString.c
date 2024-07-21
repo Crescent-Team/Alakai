@@ -1,41 +1,34 @@
 #include <stdlib.h>
+#include "../include/AlakaiError.h"
+#include "../include/dynString.h"
 
-typedef enum ReturnCodes {
-    ALLOCATION_ERROR,
-    PASS,
-} ReturnCodes;
+dynString *new_dynString()
+{
+    dynString *myStr = (dynString *)malloc(sizeof(dynString));
 
-typedef struct dynString {
-    char *buff;
-    int charLen; // number of stored characters
-    float capacity; // number of slots available for characters
-} dynString;
-
-dynString *new_dynString(){
-    dynString *myStr = (dynString*) malloc(sizeof(dynString));
-
-    if(myStr == NULL)
-        return NULL;
+    if (myStr == NULL)
+        exit_due_to_allocation_null;
 
     myStr->capacity = 10;
     myStr->charLen = 0;
-    myStr->buff = (char*) malloc(10 * sizeof(char));
+    myStr->buff = (char *)malloc(10 * sizeof(char));
 
-    if(myStr->buff == NULL)
-        return NULL;
+    if (myStr->buff == NULL)
+        exit_due_to_allocation_null;
     return myStr;
 }
 
-ReturnCodes append_char_to_dynString(dynString *dest, char myChar){
-    if((dest->charLen + 1) > dest->capacity){
+void append_char_to_dynString(dynString *dest, char myChar)
+{
+    if ((dest->charLen + 1) > dest->capacity)
+    {
         dest->capacity *= 2;
         char *newBuff = realloc(dest->buff, dest->capacity);
-        if(newBuff == NULL){
-            return ALLOCATION_ERROR;
-        }
+        if (newBuff == NULL)
+            return exit_due_to_allocation_null();
+
         dest->buff = newBuff;
     }
     dest->buff[dest->charLen] = myChar;
     dest->buff[++dest->charLen] = '\0';
-    return PASS;
 }
